@@ -1,11 +1,16 @@
+%define oname kdfm-code 
+
+%define git 20210108
+
 Name:           kdfm
-Version:        @SERVICE@
-Release:        0
+Version:        0
+Release:        0.git.1
 Summary:        File Manager
 License:        GPL-2.0-or-later
 Group:          System/GUI/KDE
 URL:            https://kdfm.sourceforge.io
-Source:         %{name}-%{version}.tar.xz
+Source:         %{oname}.tar.xz
+
 BuildRequires:  cmake
 BuildRequires:  cmake(KF5Config)
 BuildRequires:  cmake(KF5ConfigWidgets)
@@ -22,8 +27,6 @@ BuildRequires:  cmake(KF5Solid)
 BuildRequires:  cmake(KF5WidgetsAddons)
 BuildRequires:  cmake(KF5WindowSystem)
 BuildRequires:  cmake(KF5XmlGui)
-BuildRequires:  gcc-c++
-BuildRequires:  pkgconfig
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  pkgconfig(Qt5Gui)
@@ -33,7 +36,7 @@ BuildRequires:  pkgconfig(Qt5UiTools)
 BuildRequires:  pkgconfig(Qt5Widgets)
 BuildRequires:  pkgconfig(Qt5X11Extras)
 BuildRequires:  pkgconfig(Qt5Xml)
-BuildRequires:  update-desktop-files
+
 Recommends:     styleproject
 Recommends:     kio-extras5
 
@@ -41,7 +44,7 @@ Recommends:     kio-extras5
 kdfm is a filemanager written in C++/Qt. kdfm offers a Cover Flow navigation add-on.
 
 %prep
-%autosetup
+%autosetup -n %{oname}
 sed -i 's/\(Icon=\).*/\1system-file-manager/;s/\(GenericName=\).*/\1File Browser/' src/%{name}.desktop
 sed -i "s/\(Exec=\).*/\1env QT_STYLE_OVERRIDE=Styleproject %{name}/" src/%{name}.desktop
 
@@ -50,14 +53,11 @@ sed -i "s/\(Exec=\).*/\1env QT_STYLE_OVERRIDE=Styleproject %{name}/" src/%{name}
 %make_build
 
 %install
-%cmake_install
-%suse_update_desktop_file -r %{name} Qt System FileTools FileManager
+%make_install -C build
 
 %files
-#%%doc README.md
+%license src/COPYING
 %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %dir %{_datadir}/kxmlgui5/%{name}
 %{_datadir}/kxmlgui5/%{name}/%{name}ui.rc
-#%%{_datadir}/icons/hicolor/*/apps/%%{name}.??g
-%license src/COPYING
